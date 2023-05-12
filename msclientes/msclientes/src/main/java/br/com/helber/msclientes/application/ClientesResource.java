@@ -12,4 +12,6 @@ public class ClientesResource {
     public String status(){
         return "ok";
     }
+
+
 }
