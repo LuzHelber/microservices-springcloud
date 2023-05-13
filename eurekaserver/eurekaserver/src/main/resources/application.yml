@@ -7,5 +7,6 @@ server:
 
 eureka:
   client:
-    register-whit-eureka: false
+    register-with-eureka: false
     fetch-registry: false
+
