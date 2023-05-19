@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 public class CartoesPorClienteResponse {
     private String nome;
     private String bandeira;
-    private BigDecimal limiteliberado;
+    private BigDecimal limiteLiberado;
 
     public static CartoesPorClienteResponse fromModel(ClienteCartao model){
         return new CartoesPorClienteResponse(

@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -67,7 +68,7 @@ public class AvaliadorCreditoService {
                 CartaoAprovado aprovado = new CartaoAprovado();
                 aprovado.setCartao(cartao.getNome());
                 aprovado.setBandeira(cartao.getBandeira());
-                aprovado.setLimeteAprovado(limiteAprovado);
+                aprovado.setLimiteAprovado(limiteAprovado);
 
                 return aprovado;
             }).collect(Collectors.toList());

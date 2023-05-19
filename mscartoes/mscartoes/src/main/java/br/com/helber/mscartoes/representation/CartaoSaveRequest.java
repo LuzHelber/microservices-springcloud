@@ -13,6 +13,7 @@ public class CartaoSaveRequest {
     private BigDecimal renda;
     private BigDecimal limite;
 
+
     public Cartao toModel(){
         return new Cartao(nome, bandeira, renda, limite);
     }

@@ -8,6 +8,6 @@ import java.math.BigDecimal;
 public class CartaoAprovado {
     private String cartao;
     private String bandeira;
-    private BigDecimal limeteAprovado;
+    private BigDecimal limiteAprovado;
 
 }

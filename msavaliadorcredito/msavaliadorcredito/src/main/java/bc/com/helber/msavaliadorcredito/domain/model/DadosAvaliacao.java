@@ -6,6 +6,7 @@ import lombok.Data;
 public class DadosAvaliacao {
     private String cpf;
     private Long renda;
+    
 
 
 }
