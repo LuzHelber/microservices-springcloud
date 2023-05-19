@@ -25,7 +25,7 @@ public class AvaliadorCreditoService {
 
     private final ClienteResourceClient clientesClient;
     private final CartoesResourceClient cartoesClient;
-    private SolicitacaoEmissaoCartaoPublisher emissaoCartaoPublisher;
+    private final SolicitacaoEmissaoCartaoPublisher emissaoCartaoPublisher;
 
 
     public SituacaoCliente obterSituacaoCliente (String cpf) throws DadosClienteNotFoundException,
