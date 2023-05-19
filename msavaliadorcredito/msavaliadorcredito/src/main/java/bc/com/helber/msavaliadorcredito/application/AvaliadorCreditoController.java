@@ -47,11 +47,12 @@ public class AvaliadorCreditoController {
     }
 
     @PostMapping("solicitacoes-cartao")
-    public ResponseEntity solicitarCartao(@RequestBody DadosSolicitacaoEmissaoCartao dados){
-        try{
+    public ResponseEntity solicitarCartao(@RequestBody DadosSolicitacaoEmissaoCartao dados) {
+        try {
             ProtocoloSolicitacaoCartao protocoloSolicitacaoCartao = avaliadorCreditoService
                     .solicitarEmissaoCartao(dados);
-        }catch (ErroSolicitacaoCartaoException e){
+            return ResponseEntity.ok(protocoloSolicitacaoCartao);
+        } catch (ErroSolicitacaoCartaoException e) {
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
     }
