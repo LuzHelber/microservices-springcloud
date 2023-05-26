@@ -4,15 +4,13 @@
   <component name="MavenProjectsManager">
     <option name="originalFiles">
       <list>
-        <option value="$PROJECT_DIR$/mscartoes/mscartoes/pom.xml" />
-        <option value="$PROJECT_DIR$/msclientes/msclientes/pom.xml" />
         <option value="$PROJECT_DIR$/eurekaserver/eurekaserver/pom.xml" />
         <option value="$PROJECT_DIR$/mscloudgateway/mscloudgateway/pom.xml" />
-        <option value="$PROJECT_DIR$/msavaliadorcredito/msavaliadorcredito/pom.xml" />
+        <option value="$PROJECT_DIR$/mscartoes/mscartoes/pom.xml" />
       </list>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_17" project-jdk-name="17" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_17" default="true" project-jdk-name="17" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
   </component>
 </project>
