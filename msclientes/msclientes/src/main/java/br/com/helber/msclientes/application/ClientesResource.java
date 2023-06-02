@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -28,7 +29,7 @@ public class ClientesResource {
     }
 
     @PostMapping
-    public ResponseEntity save(@RequestBody ClienteSaveRequest request){
+    public ResponseEntity<String> save(@RequestBody ClienteSaveRequest request) {
         var cliente = request.toModel();
         service.save(cliente);
         URI headerLocation = ServletUriComponentsBuilder
@@ -36,15 +37,20 @@ public class ClientesResource {
                 .query("cpf={cpf}")
                 .buildAndExpand(cliente.getCpf())
                 .toUri();
-        return ResponseEntity.created(headerLocation).build();
-
+        return ResponseEntity
+                .created(headerLocation)
+                .body("Cliente cadastrado com sucesso!");
     }
+
     @GetMapping(params = "cpf")
-    public ResponseEntity dadosCliente(@RequestParam("cpf") String cpf){
-        var cliente = service.getByCPF(cpf);
-        if(cliente.isEmpty()){
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<?> dadosCliente(@RequestParam("cpf") String cpf) {
+        Optional<Cliente> clienteOptional = service.getByCPF(cpf);
+        if (clienteOptional.isEmpty()) {
+            ErrorResponse errorResponse = new ErrorResponse("Cliente não encontrado!");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
         }
+        Cliente cliente = clienteOptional.get();
         return ResponseEntity.ok(cliente);
     }
+
 }
