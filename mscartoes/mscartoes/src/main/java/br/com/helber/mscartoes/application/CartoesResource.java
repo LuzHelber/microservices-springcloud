@@ -26,11 +26,12 @@ public class CartoesResource {
     }
 
     @PostMapping
-    public ResponseEntity cadastra(@RequestBody CartaoSaveRequest request){
+    public ResponseEntity<String> cadastra(@RequestBody CartaoSaveRequest request){
         Cartao cartao = request.toModel();
         cartaoService.save(cartao);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ResponseEntity.status(HttpStatus.CREATED).body("Cartão cadastrado com sucesso!");
     }
+
     @GetMapping(params = "renda")
     public ResponseEntity<List<Cartao>> getCartoesRendaAteh(@RequestParam("renda") Long renda){
         List<Cartao> list = cartaoService.getCartoesRendaMenorIgual(renda);
@@ -45,6 +46,5 @@ public class CartoesResource {
                 .map(CartoesPorClienteResponse::fromModel)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(resultList);
-
     }
 }

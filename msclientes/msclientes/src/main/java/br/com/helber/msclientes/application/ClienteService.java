@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -21,6 +22,18 @@ public class ClienteService {
 
     public Optional<Cliente> getByCPF(String cpf){
         return repository.findByCpf(cpf);
+    }
 
+    public Optional<Cliente> getById(Long id) {
+        return repository.findById(id);
+    }
+
+    @Transactional
+    public void delete(Long id) {
+        repository.deleteById(id);
+    }
+
+    public List<Cliente> getAllClientes() {
+        return repository.findAll();
     }
 }
