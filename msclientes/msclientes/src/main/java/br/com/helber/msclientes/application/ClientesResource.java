@@ -73,7 +73,9 @@ public class ClientesResource {
     )
     public ResponseEntity<String> save(@RequestBody ClienteSaveRequest request) {
         var cliente = request.toModel();
+        log.info("Cliente recebido para salvar: {}", cliente);
         service.save(cliente);
+        log.info("Cliente salvo: {}", cliente);
         URI headerLocation = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .query("cpf={cpf}")
@@ -83,6 +85,7 @@ public class ClientesResource {
                 .created(headerLocation)
                 .body("Cliente cadastrado com sucesso!");
     }
+
 
     @GetMapping(params = "cpf")
     @Operation(

@@ -3,6 +3,7 @@ package br.com.helber.msclientes.application;
 import br.com.helber.msclientes.domain.Cliente;
 import br.com.helber.msclientes.infra.repository.ClienteRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,13 +12,17 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ClienteService {
 
     private final ClienteRepository repository;
 
     @Transactional
     public Cliente save(Cliente cliente){
-        return repository.save(cliente);
+        log.info("Antes de salvar o cliente: {}", cliente);
+        Cliente savedCliente = repository.save(cliente);
+        log.info("Cliente salvo: {}", savedCliente);
+        return savedCliente;
     }
 
     public Optional<Cliente> getByCPF(String cpf){
