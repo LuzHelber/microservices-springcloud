@@ -1,7 +1,6 @@
 package br.com.helber.msclientes.application;
 
 import br.com.helber.msclientes.application.representation.ClienteSaveRequest;
-import br.com.helber.msclientes.application.representation.SuccessResponse;
 import br.com.helber.msclientes.domain.Cliente;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -12,14 +11,13 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,13 +41,21 @@ public class ClientesResource {
                             @ExampleObject(value = "[\n  {\n    \"id\": 1,\n    \"cpf\": \"***456789\",\n    \"nome\": \"Marcos da Silva\",\n    \"idade\": 30\n  },\n  {\n    \"id\": 2,\n    \"cpf\": \"***654321\",\n    \"nome\": \"Silvio Santos\",\n    \"idade\": 25\n  }\n]")
                     })
             ),
-            @ApiResponse(responseCode = "404", description = "Nenhum cliente encontrado")
+            @ApiResponse(responseCode = "404", description = "Nenhum cliente encontrado",
+                    content = @Content(mediaType = "application/json", examples = {
+                            @ExampleObject(value = "{\"message\": \"Nenhum cliente cadastrado\"}")
+                    })
+            )
     })
     public ResponseEntity<List<Cliente>> getAllClientes() {
         List<Cliente> clientes = service.getAllClientes();
+        if (clientes.isEmpty()) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(Collections.emptyList());
+        }
         return ResponseEntity.ok(clientes);
     }
-
     @PostMapping
     @Operation(
             summary = "Cadastrar um novo cliente",
@@ -209,8 +215,12 @@ public class ClientesResource {
             },
             responses = {
                     @ApiResponse(
-                            responseCode = "204",
-                            description = "Cliente excluído com sucesso"
+                            responseCode = "200",
+                            description = "Cliente excluído com sucesso",
+                            content = @Content(
+                                    mediaType = "*/*",
+                                    schema = @Schema(implementation = SuccessResponse.class)
+                            )
                     ),
                     @ApiResponse(
                             responseCode = "404",
@@ -218,7 +228,7 @@ public class ClientesResource {
                     )
             }
     )
-    public ResponseEntity<Void> deleteCliente(@PathVariable("id") Long id) {
+    public ResponseEntity<SuccessResponse> deleteCliente(@PathVariable("id") Long id) {
         Optional<Cliente> clienteOptional = service.getById(id);
         if (clienteOptional.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -226,8 +236,10 @@ public class ClientesResource {
 
         service.delete(id);
 
-        return ResponseEntity.noContent().build();
+        SuccessResponse response = new SuccessResponse("Cliente excluído com sucesso");
+        return ResponseEntity.ok(response);
     }
+
 
     // Método para mascarar o CPF
     private String maskCpf(String cpf) {

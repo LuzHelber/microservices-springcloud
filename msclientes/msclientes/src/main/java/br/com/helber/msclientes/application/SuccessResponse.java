@@ -1,4 +1,4 @@
-package br.com.helber.msclientes.application.representation;
+package br.com.helber.msclientes.application;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
