@@ -17,15 +17,29 @@ public class ClienteService {
 
     private final ClienteRepository repository;
 
+    private String maskCpf(String cpf) {
+        return "***" + cpf.substring(3);
+    }
+
     @Transactional
-    public Cliente save(Cliente cliente){
-        log.info("Antes de salvar o cliente: {}", cliente);
+    public Cliente save(Cliente cliente) {
+        log.info("Antes de salvar o cliente: id={}, cpf={}, nome={}, idade={}",
+                cliente.getId(),
+                maskCpf(cliente.getCpf()),
+                cliente.getNome(),
+                cliente.getIdade()
+        );
         Cliente savedCliente = repository.save(cliente);
-        log.info("Cliente salvo: {}", savedCliente);
+        log.info("Cliente salvo: id={}, cpf={}, nome={}, idade={}",
+                savedCliente.getId(),
+                maskCpf(savedCliente.getCpf()),
+                savedCliente.getNome(),
+                savedCliente.getIdade()
+        );
         return savedCliente;
     }
 
-    public Optional<Cliente> getByCPF(String cpf){
+    public Optional<Cliente> getByCPF(String cpf) {
         return repository.findByCpf(cpf);
     }
 

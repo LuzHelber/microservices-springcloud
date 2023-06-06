@@ -1,6 +1,7 @@
 package br.com.helber.msclientes.application;
 
 import br.com.helber.msclientes.application.representation.ClienteSaveRequest;
+import br.com.helber.msclientes.application.representation.SuccessResponse;
 import br.com.helber.msclientes.domain.Cliente;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -39,7 +40,7 @@ public class ClientesResource {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Lista de clientes encontrada",
                     content = @Content(mediaType = "application/json", examples = {
-                            @ExampleObject(value = "[\n  {\n    \"id\": 1,\n    \"cpf\": \"123456789\",\n    \"nome\": \"Marcos da Silva\",\n    \"idade\": 30\n  },\n  {\n    \"id\": 2,\n    \"cpf\": \"987654321\",\n    \"nome\": \"Silvio Santos\",\n    \"idade\": 25\n  }\n]")
+                            @ExampleObject(value = "[\n  {\n    \"id\": 1,\n    \"cpf\": \"***456789\",\n    \"nome\": \"Marcos da Silva\",\n    \"idade\": 30\n  },\n  {\n    \"id\": 2,\n    \"cpf\": \"***654321\",\n    \"nome\": \"Silvio Santos\",\n    \"idade\": 25\n  }\n]")
                     })
             ),
             @ApiResponse(responseCode = "404", description = "Nenhum cliente encontrado")
@@ -60,7 +61,7 @@ public class ClientesResource {
                             schema = @Schema(implementation = ClienteSaveRequest.class),
                             examples = @ExampleObject(
                                     name = "Exemplo de solicitação",
-                                    value = "{\"cpf\": \"123456789\", \"nome\": \"Marcos da Silva\", \"idade\": 30}"
+                                    value = "{\"cpf\": \"***456789\", \"nome\": \"Marcos da Silva\", \"idade\": 30}"
                             )
                     )
             ),
@@ -71,19 +72,30 @@ public class ClientesResource {
                     )
             }
     )
-    public ResponseEntity<String> save(@RequestBody ClienteSaveRequest request) {
+    public ResponseEntity<?> save(@RequestBody ClienteSaveRequest request) {
         var cliente = request.toModel();
-        log.info("Cliente recebido para salvar: {}", cliente);
+        log.info("Cliente recebido para salvar: id={}, cpf={}, nome={}, idade={}",
+                cliente.getId(),
+                maskCpf(cliente.getCpf()), // Mascarar o CPF antes de registrar no log
+                cliente.getNome(),
+                cliente.getIdade()
+        );
         service.save(cliente);
-        log.info("Cliente salvo: {}", cliente);
+        log.info("Cliente salvo: id={}, cpf={}, nome={}, idade={}",
+                cliente.getId(),
+                maskCpf(cliente.getCpf()), // Mascarar o CPF antes de registrar no log
+                cliente.getNome(),
+                cliente.getIdade()
+        );
         URI headerLocation = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .query("cpf={cpf}")
-                .buildAndExpand(cliente.getCpf())
+                .buildAndExpand(maskCpf(cliente.getCpf())) // Mascarar o CPF antes de construir o headerLocation
                 .toUri();
+
         return ResponseEntity
                 .created(headerLocation)
-                .body("Cliente cadastrado com sucesso!");
+                .body(new ErrorResponse("Cliente cadastrado com sucesso!"));
     }
 
 
@@ -96,7 +108,7 @@ public class ClientesResource {
                             name = "cpf",
                             description = "CPF do cliente",
                             required = true,
-                            example = "123456789"
+                            example = "***456789"
                     )
             },
             responses = {
@@ -108,7 +120,7 @@ public class ClientesResource {
                                     schema = @Schema(implementation = Cliente.class),
                                     examples = @ExampleObject(
                                             name = "Exemplo de resposta",
-                                            value = "{\"id\": 1, \"cpf\": \"123456789\", \"nome\": \"Marcos da Silva\", \"idade\": 30}"
+                                            value = "{\"id\": 1, \"cpf\": \"***456789\", \"nome\": \"Marcos da Silva\", \"idade\": 30}"
                                     )
                             )
                     ),
@@ -127,6 +139,7 @@ public class ClientesResource {
         Cliente cliente = clienteOptional.get();
         return ResponseEntity.ok(cliente);
     }
+
     @PutMapping("/{id}")
     @Operation(
             summary = "Atualizar dados de um cliente",
@@ -146,7 +159,7 @@ public class ClientesResource {
                             schema = @Schema(implementation = ClienteSaveRequest.class),
                             examples = @ExampleObject(
                                     name = "Exemplo de solicitação",
-                                    value = "{\"cpf\": \"123456789\", \"nome\": \"Marcos da Silva\", \"idade\": 30}"
+                                    value = "{\"cpf\": \"***456789\", \"nome\": \"Marcos da Silva\", \"idade\": 30}"
                             )
                     )
             ),
@@ -161,7 +174,7 @@ public class ClientesResource {
                     )
             }
     )
-    public ResponseEntity<String> updateCliente(
+    public ResponseEntity<SuccessResponse> updateCliente(
             @PathVariable("id") Long id,
             @RequestBody ClienteSaveRequest request
     ) {
@@ -177,8 +190,11 @@ public class ClientesResource {
 
         service.save(cliente);
 
-        return ResponseEntity.ok("Cliente atualizado com sucesso");
+        SuccessResponse response = new SuccessResponse("Cliente atualizado com sucesso");
+        return ResponseEntity.ok(response);
     }
+
+
     @DeleteMapping("/{id}")
     @Operation(
             summary = "Excluir um cliente",
@@ -213,5 +229,11 @@ public class ClientesResource {
         return ResponseEntity.noContent().build();
     }
 
-
+    // Método para mascarar o CPF
+    private String maskCpf(String cpf) {
+        if (cpf.length() != 11) {
+            return cpf;
+        }
+        return "***" + cpf.substring(3);
+    }
 }
