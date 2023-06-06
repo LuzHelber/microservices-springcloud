@@ -13,10 +13,6 @@ import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 public class MscartoesApplication {
 
 	public static void main(String[] args) {
-		log.info("informação: {}", "teste info" );
-		log.error("informação: {}", "teste erro" );
-		log.warn("informação: {}", "teste warn" );
-
 		SpringApplication.run(MscartoesApplication.class, args);
 	}
 
